@@ -6,5 +6,4 @@ c:\users\пользователь\documents\visual studio 2010\Projects\PKE-1\PK
 c:\users\пользователь\documents\visual studio 2010\Projects\PKE-1\PKE-1\obj\x86\Debug\PKE-1.exe
 c:\users\пользователь\documents\visual studio 2010\Projects\PKE-1\PKE-1\obj\x86\Debug\PKE-1.pdb
 C:\Users\Пользователь\documents\visual studio 2010\Projects\PKE-1\PKE-1\bin\Debug\PKE-1.exe.config
-C:\Users\Пользователь\documents\visual studio 2010\Projects\PKE-1\PKE-1\obj\x86\Debug\PKE-1.csprojResolveAssemblyReference.cache
 C:\Users\Пользователь\documents\visual studio 2010\Projects\PKE-1\PKE-1\obj\x86\Debug\PKE-1.csproj.ResolveComReference.cache

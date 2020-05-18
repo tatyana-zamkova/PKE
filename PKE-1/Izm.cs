@@ -13,8 +13,7 @@ namespace PKE_1
         private long timeStop; 
         private int averaging_interval_time;
         private string active_cxema;
-     //   public int Id { get; set; }
-     //   public List<int> SubList { get; set; }
+     
 
         public string UID
         {

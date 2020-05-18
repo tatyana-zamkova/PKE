@@ -50,8 +50,6 @@
     <Compile Include="CompareBox.cs" />
     <Compile Include="CompTimeTeck.cs" />
     <Compile Include="Cxema.cs" />
-    <Compile Include="Cxema1.cs" />
-    <Compile Include="Cxema2.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

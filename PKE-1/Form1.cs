@@ -15,48 +15,79 @@ namespace PKE_1
 {
     public partial class Form1 : Form
     {       SortedSet<Izm> Izmer = new SortedSet<Izm>(new CompareBox());
-            HashSet<Cxema1> AllIzmer1 = new HashSet<Cxema1>();
-            HashSet<Cxema2> AllIzmer2 = new HashSet<Cxema2>();
+            HashSet<Cxema> AllIzmer1 = new HashSet<Cxema>();
+            HashSet<Cxema> AllIzmer2 = new HashSet<Cxema>();
         public Form1()
         {
             InitializeComponent();
             this.dataGridView2.Visible = false;
             this.dataGridView3.Visible = false;
-            DirectoryInfo dir = new DirectoryInfo(@"D:\#data\card\PKE");
-           
-            foreach (var item in dir.GetDirectories())
+            DirectoryInfo dir = new DirectoryInfo(@"F:\#data\#data\card\PKE");
+            try
             {
-                          
-                foreach (var it in item.GetDirectories())
+                foreach (var item in dir.GetDirectories())
                 {
-                                    
-                    foreach (var i in it.GetFiles())
+
+                    foreach (var it in item.GetDirectories())
                     {
-                        XmlDocument xml = new XmlDocument();
-                        xml.Load(@"D:\#data\card\PKE\" + item+ @"\" + it + @"\"+ i.Name);
-                        XmlElement el = xml.DocumentElement;
-                        XmlNode uid = el.SelectSingleNode("/RM3_ПКЭ");
-                        XmlNode node = el.SelectSingleNode("/RM3_ПКЭ/Param_Check_PKE");
-                        XmlNode node1 = el.SelectSingleNode("/RM3_ПКЭ/Result_Check_PKE");
-                        Izm attr = new Izm(uid.Attributes["UID"].InnerText, node.Attributes["nameObject"].InnerText, Convert.ToInt64(node.Attributes["TimeStart"].InnerText), Convert.ToInt64(node.Attributes["TimeStop"].InnerText), Convert.ToInt32(node.Attributes["averaging_interval_time"].InnerText), node.Attributes["active_cxema"].InnerText);
-                       if (!Izmer.Contains(attr))
-                        Izmer.Add(attr);
-                        if(attr.Active_cxema=="1")
+
+                        foreach (var i in it.GetFiles())
                         {
-                            Cxema1 attr1 = new Cxema1(uid.Attributes["UID"].InnerText, node1.Attributes["pke_cxema"].InnerText, node1.Attributes["TimeTek"].InnerText, node1.Attributes["UA"].InnerText, node1.Attributes["IA"].InnerText);
-                            AllIzmer1.Add(attr1);
-                        }
-                        if (attr.Active_cxema == "2")
-                        {
-                            Cxema2 attr2 = new Cxema2(uid.Attributes["UID"].InnerText, node1.Attributes["pke_cxema"].InnerText, node1.Attributes["TimeTek"].InnerText, node1.Attributes["UAB"].InnerText, node1.Attributes["UBC"].InnerText);
-                            AllIzmer2.Add(attr2);
+                            XmlDocument xml = new XmlDocument();
+                            xml.Load(@"F:\#data\#data\card\PKE\" + item + @"\" + it + @"\" + i.Name);
+                            XmlElement el = xml.DocumentElement;
+                            XmlNode uid = el.SelectSingleNode("/RM3_ПКЭ");
+                            XmlNode node = el.SelectSingleNode("/RM3_ПКЭ/Param_Check_PKE");
+                           
+                            Izm attr = new Izm(uid.Attributes["UID"].InnerText, node.Attributes["nameObject"].InnerText, Convert.ToInt64(node.Attributes["TimeStart"].InnerText), Convert.ToInt64(node.Attributes["TimeStop"].InnerText), Convert.ToInt32(node.Attributes["averaging_interval_time"].InnerText), node.Attributes["active_cxema"].InnerText);
+                            if (!Izmer.Contains(attr))
+                                Izmer.Add(attr);
+                         
+                                List<string> parametrs1 = new List<string>();
+                                List<string> parametrs2 = new List<string>();
+
+                               using (XmlReader x = XmlReader.Create(@"F:\#data\#data\card\PKE\" + item + @"\" + it + @"\" + i.Name))
+                                {
+                                    while (x.Read())
+                                    {
+                                        if ((x.NodeType == XmlNodeType.Element) && (x.Name == "Result_Check_PKE"))
+                                        {
+                                            if (x.HasAttributes)
+                                            {
+                                                while (x.MoveToNextAttribute())
+                                                {
+                                                    if (attr.Active_cxema == "1")
+                                                    {
+                                                        parametrs1.Add(x.Value.ToString());
+                                                        Cxema attr1 = new Cxema(uid.Attributes["UID"].InnerText, parametrs1);
+                                                        AllIzmer1.Add(attr1);
+                                                    }
+                                                    if (attr.Active_cxema == "2")
+                                                    {  parametrs2.Add(x.Value.ToString());
+                                                        Cxema attr2 = new Cxema(uid.Attributes["UID"].InnerText, parametrs2);
+                                                        
+                                                        AllIzmer2.Add(attr2);
+                                                    }
+                                                    
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                               
+                            }
                         }
                     }
-                }          
-      
-               
- }
-        
+
+
+                }
+            
+   
+            catch (IOException exp)
+            { DialogResult result = MessageBox.Show(exp.Message.ToString());
+            
+            }
 
              foreach (var s in Izmer)
                  dataGridView1.Rows.Add(s.Name, new DateTime(s.TimeStart * 10000 + new DateTime(1970, 1, 1).Ticks), new DateTime(s.TimeStop * 10000 + new DateTime(1970, 1, 1).Ticks), s.Active_cxema, s.Averaging_interval_time < 60000 ? s.Averaging_interval_time / 1000 + " c" : s.Averaging_interval_time / 60000 + " м", s.UID);
@@ -67,8 +98,9 @@ namespace PKE_1
             dataGridView2.Rows.Clear();
             dataGridView3.Rows.Clear();
             int n;
-            SortedSet<Cxema1> IzmerCxema1 = new SortedSet<Cxema1>(new CompTimeTeck());
-            SortedSet<Cxema2> IzmerCxema2 = new SortedSet<Cxema2>(new CompTimeTeck());
+           
+            SortedSet<Cxema> IzmerCxema1 = new SortedSet<Cxema>(new CompTimeTeck());
+            SortedSet<Cxema> IzmerCxema2 = new SortedSet<Cxema>(new CompTimeTeck());
             if (e.ColumnIndex >= 0 && e.RowIndex >= 0)
             {
                 n = Convert.ToInt32(dataGridView1[3, e.RowIndex].Value);
@@ -85,8 +117,19 @@ namespace PKE_1
                     }
                     
                 }
+                int i = 0;
+                List<string[]> str = new List<string[]>(IzmerCxema1.Count);
                 foreach (var s in IzmerCxema1)
-                    dataGridView2.Rows.Add(new DateTime(Convert.ToInt64(s.TimeTek) * 10000 + new DateTime(1970, 1, 1).Ticks), s.UA, s.IA);
+                {
+                    str.Add(new string[8]);
+                    str[i][0] = ((new DateTime(Convert.ToInt64(s.TimeTek) * 10000 + new DateTime(1970, 1, 1).Ticks)).ToString());
+                    for (int j = 1; j < s.Subordinate.Count - 1; j++)
+                        str[i][j] = (s.Subordinate[j + 1]);
+
+                    i++;
+                }
+                foreach (string[] s in str)
+                    dataGridView2.Rows.Add(s);
 
                 
                 }
@@ -101,9 +144,18 @@ namespace PKE_1
                          }
 
                      }
-                     foreach (var s in IzmerCxema2)
-                         dataGridView3.Rows.Add(new DateTime(Convert.ToInt64(s.TimeTek) * 10000 + new DateTime(1970, 1, 1).Ticks), s.UAB, s.UBC);
-                 
+                     int i=0;
+                     List<string[]> str = new List<string[]>(IzmerCxema2.Count);  
+                     foreach (var s in IzmerCxema2){
+                         str.Add(new string[26]);
+                         str[i][0] = ((new DateTime(Convert.ToInt64(s.TimeTek) * 10000 + new DateTime(1970, 1, 1).Ticks)).ToString());
+                         for (int j = 1; j < s.Subordinate.Count-1; j++)
+                             str[i][j] = (s.Subordinate[j+1]);
+                         
+                         i++;
+                     }
+                      foreach (string[] s in str)
+                          dataGridView3.Rows.Add(s);
                  }
                 else { this.dataGridView2.Visible = false; this.dataGridView3.Visible = false; }
               
@@ -127,7 +179,7 @@ namespace PKE_1
             }
             for (int i = 1; i < dataGridView1.Rows.Count-1; i++)
             {
-                for (int j = 0; j < (dataGridView1.Columns.Count-2); j++)
+                for (int j = 0; j < (dataGridView1.Columns.Count-1); j++)
                 {
                     ExcelWorkSheet.Cells[i + 3, j + 2] = dataGridView1.Rows[i].Cells[j].Value.ToString();
                 }

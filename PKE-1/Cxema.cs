@@ -10,7 +10,7 @@ namespace PKE_1
       private string uid;
       private string  pke_cxema;
       private string  timeTek;
-     
+      public List<string> Subordinate { get; set; }
       public string UID
       {
           get { return uid; }
@@ -31,12 +31,12 @@ namespace PKE_1
         {
 
         }
-         public Cxema(string uid, string pke_cxema, string timeTek)
+         public Cxema(string uid,  List<string> subordinate)
         {
-            this.UID = uid;
-            this.Pke_cxema = pke_cxema;
-            this.TimeTek = timeTek;
-                    
+          this.UID = uid;
+          //  this.Pke_cxema = pke_cxema;
+          //  this.TimeTek = timeTek;
+            this.Subordinate = subordinate;          
         }
     }
 }

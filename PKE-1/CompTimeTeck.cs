@@ -9,9 +9,9 @@ namespace PKE_1
     {
         public int Compare(Cxema x, Cxema y)
         {
-            if (x.TimeTek.CompareTo(y.TimeTek) != 0)
+            if (x.Subordinate[1].CompareTo(y.Subordinate[1]) != 0)
             {
-                return x.TimeTek.CompareTo(y.TimeTek);
+                return x.Subordinate[1].CompareTo(y.Subordinate[1]);
             }
 
             else
