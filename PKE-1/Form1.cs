@@ -122,7 +122,7 @@ namespace PKE_1
                 foreach (var s in IzmerCxema1)
                 {
                     str.Add(new string[8]);
-                    str[i][0] = ((new DateTime(Convert.ToInt64(s.TimeTek) * 10000 + new DateTime(1970, 1, 1).Ticks)).ToString());
+                    str[i][0] = ((new DateTime(Convert.ToInt64(s.Subordinate[1]) * 10000 + new DateTime(1970, 1, 1).Ticks)).ToString());
                     for (int j = 1; j < s.Subordinate.Count - 1; j++)
                         str[i][j] = (s.Subordinate[j + 1]);
 
@@ -148,7 +148,7 @@ namespace PKE_1
                      List<string[]> str = new List<string[]>(IzmerCxema2.Count);  
                      foreach (var s in IzmerCxema2){
                          str.Add(new string[26]);
-                         str[i][0] = ((new DateTime(Convert.ToInt64(s.TimeTek) * 10000 + new DateTime(1970, 1, 1).Ticks)).ToString());
+                         str[i][0] = ((new DateTime(Convert.ToInt64(s.Subordinate[1]) * 10000 + new DateTime(1970, 1, 1).Ticks)).ToString());
                          for (int j = 1; j < s.Subordinate.Count-1; j++)
                              str[i][j] = (s.Subordinate[j+1]);
                          
