@@ -17,14 +17,25 @@ namespace PKE_1
     {       SortedSet<Izm> Izmer = new SortedSet<Izm>(new CompareBox());
             HashSet<Cxema> AllIzmer1 = new HashSet<Cxema>();
             HashSet<Cxema> AllIzmer2 = new HashSet<Cxema>();
+            private string folderName;
+            DialogResult result;
         public Form1()
         {
             InitializeComponent();
             this.dataGridView2.Visible = false;
             this.dataGridView3.Visible = false;
-            DirectoryInfo dir = new DirectoryInfo(@"F:\#data\#data\card\PKE");
+            result = MessageBox.Show("Выберите путь до каталога, содержащего папку верхнего уровня #data","Выбор папки");
+            result = folderBrowserDialog1.ShowDialog();
+            folderName = folderBrowserDialog1.SelectedPath + @"\#data\#data\card\PKE";
+            if (result == DialogResult.OK)
+            {
+                               
+            DirectoryInfo dir = new DirectoryInfo(@folderName);
+            this.BringToFront();
+            //DirectoryInfo dir = new DirectoryInfo(@"F:\#data\#data\card\PKE");
             try
             {
+               
                 foreach (var item in dir.GetDirectories())
                 {
 
@@ -34,7 +45,7 @@ namespace PKE_1
                         foreach (var i in it.GetFiles())
                         {
                             XmlDocument xml = new XmlDocument();
-                            xml.Load(@"F:\#data\#data\card\PKE\" + item + @"\" + it + @"\" + i.Name);
+                            xml.Load(@folderName + @"\" + item + @"\" + it + @"\" + i.Name);
                             XmlElement el = xml.DocumentElement;
                             XmlNode uid = el.SelectSingleNode("/RM3_ПКЭ");
                             XmlNode node = el.SelectSingleNode("/RM3_ПКЭ/Param_Check_PKE");
@@ -80,17 +91,21 @@ namespace PKE_1
                         }
                     }
 
-
+                foreach (var s in Izmer)
+                    dataGridView1.Rows.Add(s.Name, new DateTime(s.TimeStart * 10000 + new DateTime(1970, 1, 1).Ticks), new DateTime(s.TimeStop * 10000 + new DateTime(1970, 1, 1).Ticks), s.Active_cxema, s.Averaging_interval_time < 60000 ? s.Averaging_interval_time / 1000 + " c" : s.Averaging_interval_time / 60000 + " м", s.UID);
                 }
             
    
             catch (IOException exp)
-            { DialogResult result = MessageBox.Show(exp.Message.ToString());
+            {
+                result = MessageBox.Show(exp.Message.ToString(), "Каталог или файлы не найдены!");
+               
             
             }
-
-             foreach (var s in Izmer)
-                 dataGridView1.Rows.Add(s.Name, new DateTime(s.TimeStart * 10000 + new DateTime(1970, 1, 1).Ticks), new DateTime(s.TimeStop * 10000 + new DateTime(1970, 1, 1).Ticks), s.Active_cxema, s.Averaging_interval_time < 60000 ? s.Averaging_interval_time / 1000 + " c" : s.Averaging_interval_time / 60000 + " м", s.UID);
+            }
+           
+          
+           
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -186,6 +201,11 @@ namespace PKE_1
             }
 
             ExcelApp.Visible = true;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            this.Activate();
         }
     }
 }
