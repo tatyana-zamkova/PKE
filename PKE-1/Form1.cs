@@ -19,6 +19,9 @@ namespace PKE_1
             HashSet<Cxema> AllIzmer2 = new HashSet<Cxema>();
             private string folderName;
             DialogResult result;
+            HashSet<string> Names1 = new HashSet<string>();
+            HashSet<string> Names2 = new HashSet<string>();
+       
         public Form1()
         {
             InitializeComponent();
@@ -26,7 +29,7 @@ namespace PKE_1
             this.dataGridView3.Visible = false;
             result = MessageBox.Show("Выберите путь до каталога, содержащего папку верхнего уровня #data","Выбор папки");
             result = folderBrowserDialog1.ShowDialog();
-            folderName = folderBrowserDialog1.SelectedPath + @"\#data\#data\card\PKE";
+            folderName = folderBrowserDialog1.SelectedPath + @"\#data\card\PKE";
             if (result == DialogResult.OK)
             {
                                
@@ -60,7 +63,7 @@ namespace PKE_1
                                using (XmlReader x = XmlReader.Create(@"F:\#data\#data\card\PKE\" + item + @"\" + it + @"\" + i.Name))
                                 {
                                     while (x.Read())
-                                    {
+                                    {                                        
                                         if ((x.NodeType == XmlNodeType.Element) && (x.Name == "Result_Check_PKE"))
                                         {
                                             if (x.HasAttributes)
@@ -70,16 +73,23 @@ namespace PKE_1
                                                     if (attr.Active_cxema == "1")
                                                     {
                                                         parametrs1.Add(x.Value.ToString());
-                                                        Cxema attr1 = new Cxema(uid.Attributes["UID"].InnerText, parametrs1);
-                                                        AllIzmer1.Add(attr1);
+                                                        Names1.Add(x.Name);
                                                     }
                                                     if (attr.Active_cxema == "2")
                                                     {  parametrs2.Add(x.Value.ToString());
-                                                        Cxema attr2 = new Cxema(uid.Attributes["UID"].InnerText, parametrs2);
-                                                        
-                                                        AllIzmer2.Add(attr2);
+                                                       Names2.Add(x.Name);
                                                     }
                                                     
+                                                }
+                                                if (attr.Active_cxema == "1")
+                                                {
+                                                    Cxema attr1 = new Cxema(uid.Attributes["UID"].InnerText, parametrs1);
+                                                    AllIzmer1.Add(attr1);
+                                                }
+                                                if (attr.Active_cxema == "2")
+                                                {
+                                                    Cxema attr2 = new Cxema(uid.Attributes["UID"].InnerText, parametrs2);
+                                                    AllIzmer2.Add(attr2);
                                                 }
                                             }
 
@@ -206,6 +216,46 @@ namespace PKE_1
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Activate();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Excel.Application ExcelApp = new Microsoft.Office.Interop.Excel.Application();
+            Excel.Workbook ExcelWorkBook;
+            Excel.Worksheet ExcelWorkSheet;
+            ExcelWorkBook = ExcelApp.Workbooks.Add(System.Reflection.Missing.Value);
+            ExcelWorkSheet = (Excel.Worksheet)ExcelWorkBook.Worksheets.get_Item(1);
+            ExcelWorkSheet.Cells[1, 3] = "Измерения";
+            int i;
+            for (int j = 2; j < Names2.Count; j++)
+            {
+                ExcelWorkSheet.Cells[2, j] = Names2.ElementAt(j);
+            }
+            for (i = 3; i < AllIzmer2.Count + 3; i++)
+            {
+                for (int j = 2; j < Names2.Count; j++)
+                {
+                    ExcelWorkSheet.Cells[i, j] = AllIzmer2.ElementAt(i-3).Subordinate[j];
+                }
+            }
+            int k = i++;
+            for (int j = 2; j < Names1.Count; j++)
+            {
+                ExcelWorkSheet.Cells[k, j] = Names1.ElementAt(j);
+            }
+            k++;
+            for (i = k; i < AllIzmer1.Count+k; i++)
+            {
+                for (int j = 2; j < Names1.Count; j++)
+                {
+                    ExcelWorkSheet.Cells[i, j] = AllIzmer1.ElementAt(i - k).Subordinate[j];
+                }
+            }
+           
+
+
+            ExcelApp.Visible = true;
+
         }
     }
 }
